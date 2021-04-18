@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Post, Query, Res, UnprocessableEntityException, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Get, NotFoundException, Post, Query, Res, UnprocessableEntityException, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
 import { extname } from 'path';
@@ -9,6 +9,9 @@ export class AppController {
 
   @Get()
   async getResource(@Query('key') key: string, @Res() res) {
+    if(!key) {
+      throw new BadRequestException('Ensure file key to retrieve');
+    }
     // default content type is json.
     res.setHeader('content-type', 'application/json');
     let resourceType = extname(key);
